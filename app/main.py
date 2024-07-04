@@ -14,6 +14,7 @@ async def main() -> None:
     hue_light = HueLightDevice()
     speaker = SmartSpeakerDevice()
     toilet = SmartToiletDevice()
+
     register_tasks = [
         service.register_device(hue_light),
         service.register_device(speaker),
@@ -41,8 +42,9 @@ async def main() -> None:
     ]
 
     # run the programs
-    await service.run_program(wake_up_program)
-    await service.run_program(sleep_program)
+    task_wake_up = asyncio.ensure_future(service.run_program(wake_up_program))
+    task_sleep = asyncio.ensure_future(service.run_program(sleep_program))
+    await asyncio.gather(task_wake_up, task_sleep)
 
 
 if __name__ == "__main__":
